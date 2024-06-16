@@ -237,8 +237,8 @@ export default async function Dashboard() {
                         <div className="flex items-center">
                           <h3 className="text-muted-foreground text-lg md:text-2xl mt-2">
                             {Object.values(
-                              stockChartData[0].data[
-                                stockChartData[0].data.length - 1
+                              stockChartData[index].data[
+                                stockChartData[index].data.length - 1
                               ].close
                             )}
                           </h3>
