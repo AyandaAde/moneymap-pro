@@ -14,16 +14,12 @@ import { getStockPrices } from "@/lib/getStockPrices";
 import { sortBy } from "lodash";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChartSkeleton, TransactionSkeleton } from "@/components/Skeletons";
-import { CardStack } from "@/components/ui/card-stack";
 
 export default async function Dashboard() {
   const user = await currentUser();
   const stocks = ["IBM", "AAPL", "TSLA"];
-  const stockData = [];
-  // const stockData = await getStockPrices(stocks);
+  const stockData = await getStockPrices(stocks);
   let loading = true;
-  // console.log(stockData);
-
   const { id, fullName, imageUrl, emailAddresses } = user!;
   const dbUser = await prisma.user.findUnique({
     where: {
@@ -119,45 +115,6 @@ export default async function Dashboard() {
     };
   });
 
-  const CARDS = [
-    {
-      id: 0,
-      name: "Benjamin Franklin",
-      designation: "Former US President",
-      content: (
-        <p>
-          An investment in <Highlight>knowledge</Highlight> pays the best
-          interest.
-        </p>
-      ),
-    },
-    {
-      id: 1,
-      name: "Jim Rogers",
-      designation: "Investor",
-      content: (
-        <p>
-          Bottoms in the investment world don&apos;t end with
-          <Highlight>four-year lows;</Highlight> they end with
-          <Highlight>10- or 15-year lows</Highlight>
-        </p>
-      ),
-    },
-    {
-      id: 2,
-      name: "Warren Buffett",
-      designation: "Businessman and Philanthropist",
-      content: (
-        <p>
-          I will tell you how to become rich. Close the doors.
-          <Highlight>Be fearful</Highlight> when others are greedy.{" "}
-          <Highlight>Be greedy</Highlight>
-          when others are fearful.
-        </p>
-      ),
-    },
-  ];
-
   if (income && expenses && transactions) loading = false;
 
   return (
@@ -223,9 +180,6 @@ export default async function Dashboard() {
             </div>
           </div>
         )}
-        <div className="my-12 flex items-center justify-center w-full">
-          <CardStack items={CARDS} />
-        </div>
       </div>
       <div className="w-full rounded-none bg-background">
         <Tabs defaultValue="spend" className="w-full">
@@ -344,22 +298,3 @@ export default async function Dashboard() {
     </div>
   );
 }
-
-export const Highlight = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
-  return (
-    <span
-      className={cn(
-        "font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-700/[0.2] dark:text-emerald-500 px-1 py-0.5",
-        className
-      )}
-    >
-      {children}
-    </span>
-  );
-};
