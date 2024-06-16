@@ -18,8 +18,7 @@ import { ChartSkeleton, TransactionSkeleton } from "@/components/Skeletons";
 export default async function Dashboard() {
   const user = await currentUser();
   const stocks = ["IBM", "AAPL", "TSLA"];
-  // const stockData = await getStockPrices(stocks);
-  const stockData = [];
+  const stockData = await getStockPrices(stocks);
   let loading = true;
   const { id, fullName, imageUrl, emailAddresses } = user!;
   const dbUser = await prisma.user.findUnique({
