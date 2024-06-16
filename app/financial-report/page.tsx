@@ -173,7 +173,7 @@ export default function FinancialReport() {
             alt="chart"
             width={48}
             height={48}
-            className="w-7 h-7 object-cover rounded-full ml-2"
+            className="w-5 h-5 object-cover rounded-full ml-2"
           />
         </TabsTrigger>
       </TabsList>

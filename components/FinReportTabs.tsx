@@ -2,7 +2,7 @@
 
 import { Transaction } from "@/lib/types";
 import TransactionCard from "./TransactionCard";
-import { Card, CardContent } from "./ui/card";
+import { Card, CardContent, CardFooter } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { TransactionSkeleton } from "./Skeletons";
 import { useState } from "react";
@@ -80,11 +80,13 @@ export default function FinReportTabs({ expenses, income, loading }: Props) {
                 />
               ))}
             </CardContent>
-            <PaginationComp
-              length={expenses.length}
-              results={results}
-              setResults={setResults}
-            />
+            <CardFooter>
+              <PaginationComp
+                length={expenses.length}
+                results={results}
+                setResults={setResults}
+              />
+            </CardFooter>
           </Card>
         ) : (
           <p className="text-sm md:text-base text-center">
