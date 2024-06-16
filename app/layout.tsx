@@ -26,11 +26,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MoneyMap Pro",
     description: "Track your expenses like a pro with MoneyMap Pro.",
-    url: "XXXXXXXXXXXXXXXXXXXX",
+    url: "https://moneymap-pro.vercel.app",
     siteName: "MoneyMap Pro",
     images: [
       {
-        url: "XXXXXXXXXXXXXXXXXXXX",
+        url: "https://moneymap-pro.vercel.app/images/og.png",
         width: 1920,
         height: 1080,
         alt: "MoneyMap Pro",
