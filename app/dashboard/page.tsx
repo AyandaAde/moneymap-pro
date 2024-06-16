@@ -18,7 +18,7 @@ import { ChartSkeleton, TransactionSkeleton } from "@/components/Skeletons";
 export default async function Dashboard() {
   const user = await currentUser();
   const stocks = ["IBM", "AAPL", "TSLA"];
-  const stockData = await getStockPrices(stocks);
+  const data = await getStockPrices(stocks);
   let loading = true;
   const { id, fullName, imageUrl, emailAddresses } = user!;
   const dbUser = await prisma.user.findUnique({
@@ -111,10 +111,10 @@ export default async function Dashboard() {
   const stockChartData = stocks.map((stock, index) => {
     return {
       name: stock,
-      data: sortBy(stockData[index], "date"),
+      data: sortBy(data[0][index], "date"),
+      priceData: data[1][index],
     };
   });
-
   if (income && expenses && transactions) loading = false;
 
   return (
@@ -233,6 +233,37 @@ export default async function Dashboard() {
                   <CardHeader>
                     <CardTitle className="text-lg font-medium text-left text-tremor-content-strong dark:text-dark-tremor-content-strong">
                       Daily Close Data
+                      {data[0][index] && (
+                        <div className="flex items-center">
+                          <h3 className="text-muted-foreground text-lg md:text-2xl mt-2">
+                            {Object.values(
+                              stockChartData[0].data[
+                                stockChartData[0].data.length - 1
+                              ].close
+                            )}
+                          </h3>
+                          <p
+                            className={`text-base md:text-xl mt-2 ml-2
+                          ${
+                            Object.values(
+                              stockChartData[index].data[
+                                stockChartData[index].data.length - 1
+                              ].close
+                            ) >
+                            Object.values(
+                              stockChartData[index].data[
+                                stockChartData[index].data.length - 2
+                              ].close
+                            )
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }
+                            `}
+                          >
+                            Yesterday close
+                          </p>
+                        </div>
+                      )}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -244,6 +275,40 @@ export default async function Dashboard() {
                       colors={["blue"]}
                       yAxisWidth={30}
                     />
+                    <div className="flex flex-wrap gap-y-2 justify-between mt-2">
+                      <div>
+                        <h3 className="font-medium">Yesterday Open</h3>
+                        <p>
+                          {Object.values(
+                            stockChartData[index].priceData[0].open
+                          )}
+                        </p>
+                      </div>
+                      <div>
+                        <h3 className="font-medium">Yesterday High</h3>
+                        <p>
+                          {Object.values(
+                            stockChartData[index].priceData[0].high
+                          )}
+                        </p>
+                      </div>
+                      <div>
+                        <h3 className="font-medium">Yesterday Low</h3>
+                        <p>
+                          {Object.values(
+                            stockChartData[index].priceData[0].low
+                          )}
+                        </p>
+                      </div>
+                      <div>
+                        <h3 className="font-medium">Yesterday Volume</h3>
+                        <p>
+                          {Object.values(
+                            stockChartData[index].priceData[0].volume
+                          )}
+                        </p>
+                      </div>
+                    </div>
                   </CardContent>
                 </TabsContent>
               ))}
