@@ -232,7 +232,7 @@ export default async function Dashboard() {
                 <TabsContent key={index} value={stock}>
                   <CardHeader>
                     <CardTitle className="text-lg font-medium text-left text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                      Daily Close Data
+                      Daily Chart
                       {data[0][index] && (
                         <div className="flex items-center">
                           <h3 className="text-muted-foreground text-lg md:text-2xl mt-2">
