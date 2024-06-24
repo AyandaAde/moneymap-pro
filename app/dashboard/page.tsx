@@ -18,7 +18,7 @@ import { ChartSkeleton, TransactionSkeleton } from "@/components/Skeletons";
 export default async function Dashboard() {
   const user = await currentUser();
   const stocks = ["IBM", "AAPL", "TSLA"];
-  // const data = await getStockPrices(stocks);
+  const data = await getStockPrices(stocks);
   let loading = true;
   const { id, fullName, imageUrl, emailAddresses } = user!;
   const dbUser = await prisma.user.findUnique({
@@ -108,13 +108,13 @@ export default async function Dashboard() {
     return data;
   });
 
-  // const stockChartData = stocks.map((stock, index) => {
-  //   return {
-  //     name: stock,
-  //     data: sortBy(data[0][index], "date"),
-  //     priceData: data[1][index],
-  //   };
-  // });
+  const stockChartData = stocks.map((stock, index) => {
+    return {
+      name: stock,
+      data: sortBy(data[0][index], "date"),
+      priceData: data[1][index],
+    };
+  });
   if (income && expenses && transactions) loading = false;
 
   return (
@@ -228,7 +228,7 @@ export default async function Dashboard() {
                   </TabsTrigger>
                 ))}
               </TabsList>
-              {/* {stocks.map((stock, index) => (
+              {stocks.map((stock, index) => (
                 <TabsContent key={index} value={stock}>
                   <CardHeader>
                     <CardTitle className="text-lg font-medium text-left text-tremor-content-strong dark:text-dark-tremor-content-strong">
@@ -311,7 +311,7 @@ export default async function Dashboard() {
                     </div>
                   </CardContent>
                 </TabsContent>
-              ))} */}
+              ))}
             </Tabs>
           </TabsContent>
         </Tabs>

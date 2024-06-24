@@ -49,6 +49,7 @@ export default function FinReportTabs({ expenses, income, loading }: Props) {
                       type={income.type}
                       category={income.category}
                       title={income.category}
+                      id={income.id}
                     />
                   ))}
                 </CardContent>
@@ -77,6 +78,7 @@ export default function FinReportTabs({ expenses, income, loading }: Props) {
                   type={expense.type}
                   category={expense.category}
                   title={expense.category}
+                  id={expense.id}
                 />
               ))}
             </CardContent>

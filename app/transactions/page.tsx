@@ -384,6 +384,7 @@ export default function Transactions() {
                         type={transaction.type}
                         category={transaction.category}
                         title={transaction.category}
+                        id={transaction.id}
                       />
                     ))}
                 </>
