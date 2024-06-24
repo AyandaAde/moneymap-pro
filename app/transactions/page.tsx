@@ -116,7 +116,10 @@ export default function Transactions() {
     if (value === "today") setTimePeriod(new Date().toString().slice(0, 15));
     else if (value === "yesterday")
       setTimePeriod(subDays(new Date(), 1).toString().slice(0, 15));
-    else setTimePeriod("all");
+    else if (value === "thisMonth") {
+      setTimePeriod(new Date().toString().slice(4, 7) + " " + new Date().toString().slice(11,15));
+      console.log(timePeriod);
+    } else setTimePeriod("all");
     fetchTransactions.mutate(undefined, {
       onSuccess: (data) => {
         console.log(data);
@@ -156,6 +159,7 @@ export default function Transactions() {
           <SelectContent>
             <SelectItem value="today">Today</SelectItem>
             <SelectItem value="yesterday">Yesterday</SelectItem>
+            <SelectItem value="thisMonth">This Month</SelectItem>
             <SelectItem value="all">All Transactions</SelectItem>
           </SelectContent>
         </Select>
@@ -359,6 +363,8 @@ export default function Transactions() {
             ? "Today"
             : timePeriod === "yesterday"
             ? "Yesterday"
+            : timePeriod === "thisMonth"
+            ? "This Month"
             : "All Transactions"}
         </CardTitle>
 

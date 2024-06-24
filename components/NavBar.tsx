@@ -66,7 +66,6 @@ export default function NavBar() {
   const fetchUserId = useMutation({
     mutationFn: async () => {
       const { data } = await axios.get("/api/getUserId");
-      console.log(data);
       setUserId(data);
       return data;
     },

@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
         category,
         amount: dbAmount,
         type,
+        createdAtMonth: new Date().toString().slice(4, 7) +  " " + new Date().toString().slice(11,15),
         createdAt: new Date().toString().slice(0,15),
       },
     });
