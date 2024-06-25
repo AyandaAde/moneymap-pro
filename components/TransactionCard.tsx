@@ -152,7 +152,7 @@ export default function TransactionCard({
           </CardDescription>
           <Popover>
             <PopoverTrigger className="mr-1" asChild>
-              <EditIcon className="w-3 h-3 md:w-4 md:h-4" />
+              <EditIcon className="w-4 h-4" />
             </PopoverTrigger>
             <PopoverContent className="w-80">
               <Form {...editTransactionForm}>
@@ -200,7 +200,7 @@ export default function TransactionCard({
           </Popover>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Trash2Icon className="w-3 h-3 md:w-4 md:h-4 text-red-700" />
+              <Trash2Icon className="w-4 h-4 text-red-700" />
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
