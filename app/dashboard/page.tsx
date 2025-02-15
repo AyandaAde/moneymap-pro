@@ -50,10 +50,10 @@ export default function Dashboard() {
   console.log("Transaction Data", transactionData)
   const expenseAmount = transactionData?.expenses
     .map((expense: any) => expense.amount)
-    .reduce((sum, a) => sum + a, 0);
+    .reduce((sum: any, a: any) => sum + a, 0);
   const incomeAmount = transactionData?.income
     .map((income: any) => income.amount)
-    .reduce((sum, a) => sum + a, 0);
+    .reduce((sum: any, a: any) => sum + a, 0);
 
   const balance = incomeAmount - expenseAmount;
 
