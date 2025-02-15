@@ -1,8 +1,8 @@
 import redisClient from "./redis";
 
 export async function rateLimit(
-  ip,
-  route,
+  ip: any,
+  route: any,
   limit: number,
   windowInSeconds: number
 ) {
