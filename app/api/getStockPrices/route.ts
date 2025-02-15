@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   let stockPriceData = [];
   let i = 0;
 
-//   console.log("Types", typeof ip, typeof url);
+  //   console.log("Types", typeof ip, typeof url);
   const { remaining, isRateLimitReached } = await rateLimit(ip, url, 1, 1);
 
   if (isRateLimitReached) {
@@ -74,8 +74,8 @@ export async function GET(req: NextRequest) {
         "X-RateLimit-Reset": new Date(Date.now() + 1000).toISOString(),
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.log("Error", error);
-    return "Error getting stock data";
+    return new NextResponse(error, { status: 500 });
   }
 }
