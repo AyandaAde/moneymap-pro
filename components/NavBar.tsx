@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -119,11 +119,12 @@ export default function NavBar() {
     (parseInt(transactionForm.watch("amount")) * 100) | 0
   );
 
-  useLayoutEffect(
+  useEffect(
     () =>
       fetchUserId.mutate(undefined, {
         onSuccess: (data) => {
           console.log(data);
+          setUserId(data);
         },
         onError(error) {
           console.log("Error", error);
@@ -131,6 +132,8 @@ export default function NavBar() {
       }),
     []
   );
+
+  if (!userId) return;
 
   return (
     <NavigationMenu className="hidden md:block">

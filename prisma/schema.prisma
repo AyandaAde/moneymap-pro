@@ -34,4 +34,6 @@ model User {
   image       String
   Transaction Transaction[]
   createdAt   DateTime      @default(now())
+
+  @@map("users")
 }

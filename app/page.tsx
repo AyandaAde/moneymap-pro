@@ -1,16 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { fadeIn, fadeUpAndOut } from "@/public/animations";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import DarkModeSlider from "@/components/DarkModeSlider";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+import { Button } from "@/components/ui/button";
+import { fadeIn } from "@/public/animations";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   return (

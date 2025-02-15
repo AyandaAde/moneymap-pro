@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const { timePeriod, date } = await req.json();
-  console.log(date);
   const user = await currentUser();
   if (!user) return NextResponse.redirect("/sign-in");
   const dbUser = await prisma.user.findUnique({

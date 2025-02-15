@@ -1,106 +1,63 @@
-import { cn, formatPrice } from "@/lib/utils";
-import Image from "next/image";
-import { AreaChart, Tab } from "@tremor/react";
+"use client";
+
 import DarkModeSlider from "@/components/DarkModeSlider";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import TransactionCard from "@/components/TransactionCard";
-import NavBar from "@/components/NavBar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserButton } from "@clerk/nextjs";
 import MobileNav from "@/components/MobileNav";
-import { prisma } from "@/lib/db/prisma";
-import { currentUser } from "@clerk/nextjs/server";
-import { getStockPrices } from "@/lib/getStockPrices";
-import { sortBy } from "lodash";
-import { Skeleton } from "@/components/ui/skeleton";
+import NavBar from "@/components/NavBar";
 import { ChartSkeleton, TransactionSkeleton } from "@/components/Skeletons";
+import TransactionCard from "@/components/TransactionCard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatPrice } from "@/lib/utils";
+import { UserButton, useUser } from "@clerk/nextjs";
+import { Transaction } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
+import { AreaChart } from "@tremor/react";
+import axios from "axios";
+import { sortBy } from "lodash";
+import Image from "next/image";
 
-export default async function Dashboard() {
-  const user = await currentUser();
+export default function Dashboard() {
+  const { user } = useUser();
   const stocks = ["IBM", "AAPL", "TSLA"];
-  const data = await getStockPrices(stocks);
+  // const data = await getStockPrices(stocks);
+
+  // const { data } = useQuery({
+  //   queryKey: ["stocks"],
+  //   queryFn: async (): Promise<any[]> => {
+  //     const { data } = await axios.get("/api/getStockPrices", {
+  //       params: {
+  //         stocks,
+  //       },
+  //     });
+  //     return data;
+  //   },
+  // });
+
+  const { data: transactionData } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: async (): Promise<any> => {
+      const { data } = await axios.get("/api/getDashboardTransactions", {
+        params: {
+          userId: user?.id,
+        },
+      });
+      return data;
+    },
+  });
+
   let loading = true;
-  const { id, fullName, imageUrl, emailAddresses } = user!;
-  const dbUser = await prisma.user.findUnique({
-    where: {
-      userId: id,
-    },
-  });
-
-  if (!dbUser) {
-    await prisma.user.create({
-      data: {
-        userId: id!,
-        fullName: fullName || "",
-        image: imageUrl,
-        email: emailAddresses[0].emailAddress,
-      },
-    });
-  }
-
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      OR: [
-        {
-          userId: dbUser?.id!,
-        },
-        {
-          userId: "494729302049485739320393",
-        },
-      ],
-    },
-    orderBy: {
-      id: "desc",
-    },
-    take: 5,
-  });
-
-  const expenses = await prisma.transaction.findMany({
-    where: {
-      OR: [
-        {
-          userId: dbUser?.id!,
-        },
-        {
-          userId: "494729302049485739320393",
-        },
-      ],
-      AND: [
-        {
-          type: "expense",
-        },
-      ],
-    },
-  });
-
-  const income = await prisma.transaction.findMany({
-    where: {
-      OR: [
-        {
-          userId: dbUser?.id!,
-        },
-        {
-          userId: "494729302049485739320393",
-        },
-      ],
-      AND: [
-        {
-          type: "income",
-        },
-      ],
-    },
-  });
-
-  const expenseAmount = expenses
-    .map((expense) => expense.amount)
+  console.log("Transaction Data", transactionData)
+  const expenseAmount = transactionData?.expenses
+    .map((expense: any) => expense.amount)
     .reduce((sum, a) => sum + a, 0);
-  const incomeAmount = income
-    .map((income) => income.amount)
+  const incomeAmount = transactionData?.income
+    .map((income: any) => income.amount)
     .reduce((sum, a) => sum + a, 0);
 
   const balance = incomeAmount - expenseAmount;
 
-  const chartdata = transactions.map((transaction) => {
+  const chartdata = transactionData?.transactions.map((transaction: any) => {
     const data = {
       transaction: transaction.category,
       amount: transaction.amount / 100,
@@ -108,20 +65,24 @@ export default async function Dashboard() {
     return data;
   });
 
-  const stockChartData = stocks.map((stock, index) => {
-    return {
-      name: stock,
-      data: sortBy(data[0][index], "date"),
-      priceData: data[1][index],
-    };
-  });
-  if (income && expenses && transactions) loading = false;
+  // const stockChartData = data
+  //   ? stocks.map((stock, index) => {
+  //       return {
+  //         name: stock,
+  //         data: sortBy(data[0][index], "date"),
+  //         priceData: data[1][index],
+  //       };
+  //     })
+  //   : [];
+
+  if (!transactionData || !user) return;
+  if (transactionData) loading = false;
 
   return (
     <div className="flex flex-col justify-center items-center pb-10 pd:mb-20">
       <div className="w-full flex flex-col items-center bg-gradient-to-b from-[#8B50FF]/35 to-[#8B50FF]/0">
         <h2 className="text-muted-foreground mt-20 text-base md:text-xl">
-          Welcome {fullName && fullName}
+          Welcome {user?.fullName && user?.fullName}
         </h2>
         <h1 className="text-muted-foreground mt-10 text-base md:text-xl">
           Account Balance
@@ -228,12 +189,12 @@ export default async function Dashboard() {
                   </TabsTrigger>
                 ))}
               </TabsList>
-              {stocks.map((stock, index) => (
+              {/* {stocks.map((stock, index) => (
                 <TabsContent key={index} value={stock}>
                   <CardHeader>
                     <CardTitle className="text-lg font-medium text-left text-tremor-content-strong dark:text-dark-tremor-content-strong">
                       Daily Chart
-                      {data[0][index] && (
+                      {data![0][index] && (
                         <div className="flex items-center">
                           <h3 className="text-muted-foreground text-lg md:text-2xl mt-2">
                             {Object.values(
@@ -311,7 +272,7 @@ export default async function Dashboard() {
                     </div>
                   </CardContent>
                 </TabsContent>
-              ))}
+              ))} */}
             </Tabs>
           </TabsContent>
         </Tabs>
@@ -333,19 +294,21 @@ export default async function Dashboard() {
             </Skeleton>
           ) : (
             <>
-              {transactions.length > 0 ? (
+              {transactionData?.transactions?.length > 0 ? (
                 <Card>
                   <CardContent>
-                    {transactions.map((transaction) => (
-                      <TransactionCard
-                        key={transaction.id}
-                        amount={transaction.amount}
-                        type={transaction.type}
-                        category={transaction.category}
-                        title={transaction.category}
-                        id={transaction.id}
-                      />
-                    ))}
+                    {transactionData?.transactions?.map(
+                      (transaction: Transaction) => (
+                        <TransactionCard
+                          key={transaction.id}
+                          amount={transaction.amount}
+                          type={transaction.type}
+                          category={transaction.category}
+                          title={transaction.category}
+                          id={transaction.id}
+                        />
+                      )
+                    )}
                   </CardContent>
                 </Card>
               ) : (
