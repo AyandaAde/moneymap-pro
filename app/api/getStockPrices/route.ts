@@ -3,6 +3,8 @@
 // import axios from "axios";
 // import { NextRequest, NextResponse } from "next/server";
 
+import { NextResponse } from "next/server";
+
 // export async function GET(req: NextRequest) {
 //   const ip = req.headers.get("x-forwarded-for") || req.ip;
 //   const url = new URL(req.url);
@@ -79,3 +81,13 @@
 //     return new NextResponse(error, { status: 500 });
 //   }
 // }
+
+
+export async function GET() {
+  try {
+    return new NextResponse("Hi from the API")
+  } catch (error: any) {
+    console.error("Error getting stock prices", error);
+    return new NextResponse(error, { status: 500 });
+  }
+}
